@@ -1,7 +1,7 @@
 import { By, until } from "selenium-webdriver";
 import login from "./login.js"
 
-const claimShifts = async () => {
+const claimShifts = async (targetShifts) => {
     const driver = await login();
 
     try {
@@ -12,10 +12,27 @@ const claimShifts = async () => {
         const shiftCards = await openShifts.findElements(By.css(".shift-card.col-3.pr-0"));
 
         // Iterate through each shift card
-        for (const shift of shiftCards) {
-            const shiftInfo = await shift.getText();
-            console.log("Shift info:", shiftInfo)
+        for (const targetShift of targetShifts) {
+            // Check if any shift matches the current targetShift
+            const shiftExists = shiftCards.some(async (shift) => {
+                // Find the necessary info from the current shift, convert to text
+                const date = await shift.findElement(By.css(".col-md-4.date.text-center"));
+                const month = await date.findElement(By.css("span")).getText();
+                const day = await date.findElement(By.css("div")).getText();
+                const time = await shift.findElement(By.css(".row.no-gutters.align-items-center")).getText();
+
+                // Check if current shifts available matches the targetShift
+                return month == targetShift.month && day === targetShift.day && time === targetShift.time;
+            });
+
+            // If a matching shift is found for any targetShift, return true
+            if (shiftExists) {
+                return true;
+            }
         }
+
+        // If no matching shift is found for any targetShift, return false
+        return false;
 
     } catch (error) {
         console.error("An error occured:", error);
