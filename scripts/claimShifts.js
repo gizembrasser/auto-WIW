@@ -1,21 +1,17 @@
-import { Builder, By, Key } from "selenium-webdriver";
+import { By, until } from "selenium-webdriver";
+import login from "./login.js"
 
-const claimShifts = async (shiftMonth, shiftDay) => {
-    const driver = new Builder().forBrowser("chrome").build();
-
+const claimShifts = async () => {
     try {
-        // Find the `span` and `div` elements by their CSS selectors
-        const spanElement = await driver.findElement(By.css(".col-md-4.date.text-center span"));
-        const divElement = await driver.findElement(By.css(".col-md-4.date.text-center div"));
+        const driver = await login();
 
-        // Get the text content of the `span` and `div` elements
-        const month = await spanElement.getText();
-        const day = await divElement.getText();
+        const openShifts = await driver.wait(until.elementLocated(By.css("#main-content > div.container.available-openshifts > div:nth-child(2) > div:nth-child(2) > div > div > div.col-md-4.date.text-center")));
+        const shiftDates = await openShifts.getText();
 
-        // Compare the values with the arguments
-        return month === shiftMonth && day === shiftDay;
-
+        console.log("Text:", shiftDates);
     } catch (error) {
         console.error("An error occured:", error);
     }
 };
+
+export default claimShifts
