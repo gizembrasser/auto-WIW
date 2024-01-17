@@ -19,8 +19,10 @@ const login = async () => {
         // Wait for login process to complete
         await driver.wait(until.titleIs("When I Work :: Schedule, Track, Communicate"), 5000);
 
+        return driver
+
     } catch (error) {
-        console.error("An error occured:", error);
+        console.error("Login failed:", error);
     }
 };
 
