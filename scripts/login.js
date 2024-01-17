@@ -1,5 +1,6 @@
-import { Builder, By, Key } from "selenium-webdriver";
+import { Builder, By, Key, until } from "selenium-webdriver";
 import "dotenv/config";
+
 
 const login = async () => {
     const driver = new Builder().forBrowser("chrome").build();
@@ -14,6 +15,9 @@ const login = async () => {
 
         const passwordInput = await driver.findElement(By.name("password"));
         await passwordInput.sendKeys(process.env.PASSWORD, Key.ENTER);
+
+        // Wait for login process to complete
+        await driver.wait(until.titleIs("When I Work :: Schedule, Track, Communicate"), 5000);
 
     } catch (error) {
         console.error("An error occured:", error);
