@@ -1,0 +1,19 @@
+{
+    "name": "auto-wheniwork",
+    "version": "1.0.0",
+    "description": "A commandline program that will automatically claim shifts in WIW",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "start": "nodemon --quiet"
+    },
+    "keywords": [],
+    "author": "Gizem Brasser",
+    "license": "ISC",
+    "dependencies": {
+        "camelcase": "^8.0.0",
+        "camelcase-keys": "^9.1.2",
+        "dotenv": "^16.3.1",
+        "selenium-webdriver": "^4.16.0"
+    }
+}
