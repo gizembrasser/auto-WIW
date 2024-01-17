@@ -1,5 +1,6 @@
 import { Builder, By, Key, until } from "selenium-webdriver";
 import "dotenv/config";
+import { noSuchElementErrorHandler, timeoutErrorHandler } from "../errors/errorHandling";
 
 
 const login = async () => {
@@ -22,7 +23,13 @@ const login = async () => {
         return driver
 
     } catch (error) {
-        console.error("Login failed:", error);
+        noSuchElementErrorHandler(error);
+        timeoutErrorHandler(error);
+
+        console.error("An error occured during login:", error);
+
+        await driver.quit();
+        throw error; // Re-throw error to signal that login failed
     }
 };
 
