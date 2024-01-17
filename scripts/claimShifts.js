@@ -1,10 +1,14 @@
 import { By, until } from "selenium-webdriver";
 import login from "./login.js"
 
+
 const claimShifts = async (targetShifts) => {
-    const driver = await login();
+    let driver;
 
     try {
+        // Attempt to login
+        driver = await login();
+
         // Wait for the `row` html element, containing open shifts, to be present
         const openShifts = await driver.wait(until.elementLocated(By.css("#main-content > div.container.available-openshifts > div:nth-child(2)")));
 
@@ -16,7 +20,7 @@ const claimShifts = async (targetShifts) => {
             // Check if any shift matches the current targetShift
             const shiftExists = shiftCards.some(async (shift) => {
                 // Find the necessary info from the current shift, convert to text
-                const date = await shift.findElement(By.css(".col-md-4.date.text-center"));
+                const dateElement = await shift.findElement(By.css(".col-md-4.date.text-center"));
                 const month = await date.findElement(By.css("span")).getText();
                 const day = await date.findElement(By.css("div")).getText();
                 const time = await shift.findElement(By.css(".row.no-gutters.align-items-center")).getText();
@@ -37,7 +41,9 @@ const claimShifts = async (targetShifts) => {
     } catch (error) {
         console.error("An error occured:", error);
     } finally {
-        await driver.quit();
+        if (driver) {
+            await driver.quit();
+        }
     }
 };
 
