@@ -1,6 +1,6 @@
 import { Builder, By, Key, until } from "selenium-webdriver";
 import "dotenv/config";
-import { noSuchElementErrorHandler, timeoutErrorHandler } from "../errors/errorHandling";
+import { noSuchElementErrorHandler, timeoutErrorHandler } from "../errors/errorHandling.js";
 
 
 const login = async () => {
