@@ -1,35 +1,29 @@
-import login from "./login.js";
-
+import puppeteer from "puppeteer";
 
 const monitorRequests = async () => {
-    let driver;
+    const browser = await puppeteer.launch({ headless: "new" });
+    const page = await browser.newPage();
 
-    try {
-        driver = await login();
+    await page.setRequestInterception(true);
 
-        await driver.executeScript(() => {
-            // Override the fetch function to log POST requests
-            const originalFetch = window.fetch;
+    // Listen for request event
+    page.on("request", (request) => {
+        const method = request.method();
+        const url = request.url();
 
-            window.fetch = function (url, options) {
-                const method = options && options.method ? options.method.toUpperCase() : 'GET';
+        if (method === "POST") {
+            console.log(`POST request sent to: ${url}`);
+        }
 
-                if (method === 'POST') {
-                    console.log('POST request sent to:', url);
-                }
+        request.continue();
+    });
 
-                // Call the original fetch function
-                return originalFetch.apply(this, arguments);
-            };
+    await page.goto("https://login.wheniwork.com");
 
-            console.log('POST request interceptor is active. Ready to log POST requests.');
-        });
-
-    } catch (error) {
-        console.error("An error occured:", error);
-    }
+    await browser.close();
 };
 
 export default monitorRequests;
+
 
 

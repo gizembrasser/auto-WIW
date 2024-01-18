@@ -1,4 +1,4 @@
-import { Builder, By, Key, until } from "selenium-webdriver";
+import puppeteer from "puppeteer";
 import "dotenv/config";
 import { noSuchElementErrorHandler, timeoutErrorHandler } from "../errors/errorHandling.js";
 
@@ -6,26 +6,30 @@ import { noSuchElementErrorHandler, timeoutErrorHandler } from "../errors/errorH
 const login = async () => {
     console.time("Login process completed in");
 
-    const driver = new Builder().forBrowser("chrome").build();
+    const browser = await puppeteer.launch({ headless: "new" });
+    const page = await browser.newPage();
 
     try {
         // Open the website
-        await driver.get("https://login.wheniwork.com");
+        await page.goto("https://login.wheniwork.com");
 
-        // Find and click an input filed by name and send keys (simulate typing)
+        // Find and type into the input fields
         console.log("Attempting to log in...");
-        const emailInput = await driver.findElement(By.name("email"));
-        await emailInput.sendKeys(process.env.EMAIL_ADDRESS, Key.ENTER);
+        await page.type("input[name='email']", process.env.EMAIL_ADDRESS);
+        await page.keyboard.press("Enter");
 
-        const passwordInput = await driver.findElement(By.name("password"));
-        await passwordInput.sendKeys(process.env.PASSWORD, Key.ENTER);
+        await page.type("input[name='password']", process.env.PASSWORD);
+        await page.keyboard.press("Enter");
 
         // Wait for login process to complete
-        await driver.wait(until.titleIs("When I Work :: Schedule, Track, Communicate"), 5000);
+        await page.waitForNavigation({
+            waitUntil: "domcontentloaded",
+            timeout: 5000,
+        });
 
         console.timeEnd("Login process completed in");
 
-        return driver
+        return browser, page;
 
     } catch (error) {
         noSuchElementErrorHandler(error);
@@ -33,7 +37,7 @@ const login = async () => {
 
         console.error("An error occured during login:", error);
 
-        await driver.quit();
+        await browser.close();
         throw error; // Re-throw error to signal that login failed
     }
 };

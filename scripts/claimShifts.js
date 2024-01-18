@@ -1,32 +1,31 @@
-import { By, until } from "selenium-webdriver";
+import puppeteer from "puppeteer";
 import { noSuchElementErrorHandler } from "../errors/errorHandling.js";
 import login from "./login.js";
 
+
 const claimShifts = async (targetShifts) => {
-    let driver;
+    let browser, page;
 
     try {
-        // Attempt to login
-        driver = await login();
+        browser, page = await login();
 
-        // Wait for the `row` html element, containing open shifts, to be present
-        const openShifts = await driver.wait(until.elementLocated(By.css("#main-content > div.container.available-openshifts > div:nth-child(2)")));
+        // Wait for the container of open shifts to be present
+        await page.waitForSelector("#main-content > div.container.available-openshifts > div:nth-child(2)");
 
-        // Find all shift cards within the `row` html element
-        const shiftCards = await openShifts.findElements(By.css(".shift-card.col-3.pr-0"));
+        // Find all shift cards within the container
+        const shiftCards = await page.$$(".shift-card.col-3.pr-0");
 
-        // Iterate through each shift card
+        // Iterate through each target shift
         for (const targetShift of targetShifts) {
             // Check if any shift matches the current targetShift
-            const shiftExists = shiftCards.some(async (shift) => {
+            const shiftExists = await shiftCards.some(async (shift) => {
                 // Find the necessary info from the current shift, convert to text
-                const dateElement = await shift.findElement(By.css(".col-md-4.date.text-center"));
-                const month = await date.findElement(By.css("span")).getText();
-                const day = await date.findElement(By.css("div")).getText();
-                const time = await shift.findElement(By.css(".row.no-gutters.align-items-center")).getText();
+                const month = await shift.$eval(".col-md-4.date.text-center span", span => span.textContent.trim());
+                const day = await shift.$eval('.col-md-4.date.text-center div', div => div.textContent.trim());
+                const time = await shift.$eval('.row.no-gutters.align-items-center', row => row.textContent.trim());
 
                 // Check if current shifts available matches the targetShift
-                return month == targetShift.month && day === targetShift.day && time === targetShift.time;
+                return month === targetShift.month && day === targetShift.day && time === targetShift.time;
             });
 
             // If a matching shift is found for any targetShift, return true
@@ -35,16 +34,15 @@ const claimShifts = async (targetShifts) => {
             }
         }
 
-        // If no matching shift is found for any targetShift, return false
+        // Otherwise return false
         return false;
 
     } catch (error) {
         noSuchElementErrorHandler(error);
-
-        console.error("An error occured:", error);
+        console.error('An error occurred:', error);
     } finally {
-        if (driver) {
-            await driver.quit();
+        if (browser) {
+            await browser.close();
         }
     }
 };
