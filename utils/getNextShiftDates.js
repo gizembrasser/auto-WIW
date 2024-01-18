@@ -32,6 +32,4 @@ const getNextShiftDates = (weekDays) => {
 
 };
 
-console.log(getNextShiftDates(["Tuesday", "Friday", "Sunday"]))
-
 export default getNextShiftDates;

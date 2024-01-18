@@ -1,5 +1,6 @@
 import { By, until } from "selenium-webdriver";
 import { noSuchElementErrorHandler } from "../errors/errorHandling.js";
+import login from "./login.js";
 
 const claimShifts = async (targetShifts) => {
     let driver;
@@ -48,4 +49,4 @@ const claimShifts = async (targetShifts) => {
     }
 };
 
-export default claimShifts
+export default claimShifts;

@@ -38,4 +38,4 @@ const login = async () => {
     }
 };
 
-export default login
+export default login;
