@@ -4,6 +4,8 @@ import { noSuchElementErrorHandler, timeoutErrorHandler } from "../errors/errorH
 
 
 const login = async () => {
+    console.time("Login process completed in");
+
     const driver = new Builder().forBrowser("chrome").build();
 
     try {
@@ -11,6 +13,7 @@ const login = async () => {
         await driver.get("https://login.wheniwork.com");
 
         // Find and click an input filed by name and send keys (simulate typing)
+        console.log("Attempting to log in...");
         const emailInput = await driver.findElement(By.name("email"));
         await emailInput.sendKeys(process.env.EMAIL_ADDRESS, Key.ENTER);
 
@@ -19,6 +22,8 @@ const login = async () => {
 
         // Wait for login process to complete
         await driver.wait(until.titleIs("When I Work :: Schedule, Track, Communicate"), 5000);
+
+        console.timeEnd("Login process completed in");
 
         return driver
 
