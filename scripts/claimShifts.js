@@ -1,6 +1,5 @@
 import { By, until } from "selenium-webdriver";
-import login from "./login.js"
-
+import { noSuchElementErrorHandler } from "../errors/errorHandling.js";
 
 const claimShifts = async (targetShifts) => {
     let driver;
@@ -39,6 +38,8 @@ const claimShifts = async (targetShifts) => {
         return false;
 
     } catch (error) {
+        noSuchElementErrorHandler(error);
+
         console.error("An error occured:", error);
     } finally {
         if (driver) {
