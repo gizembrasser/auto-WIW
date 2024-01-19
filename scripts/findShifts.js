@@ -3,7 +3,7 @@ import { noSuchElementErrorHandler } from "../errors/errorHandling.js";
 import login from "./login.js";
 
 
-const claimShifts = async (targetShifts) => {
+const findShifts = async (targetShifts) => {
     const { browser, page } = await login();
 
     try {
@@ -12,6 +12,9 @@ const claimShifts = async (targetShifts) => {
 
         // Find all shift cards within the container
         const shiftCards = await page.$$(".shift-card.col-3.pr-0");
+
+        const matchingShifts = [];
+
         // Iterate through each target shift
         for (const targetShift of targetShifts) {
             // Check if any shift matches the current targetShift
@@ -23,18 +26,19 @@ const claimShifts = async (targetShifts) => {
 
                 const openShift = { month: month, day: day, time: time };
                 // Check if current shifts available matches the targetShift
-                return Object.entries(targetShift).every(([key, value]) => openShift[key] === value);
+                if (Object.entries(targetShift).every(([key, value]) => openShift[key] === value)) {
+                    return shift;
+                } else {
+                    return null; // Indicate no match
+                }
             }));
 
-            // If a matching shift is found for any targetShift, return true
-            const shiftExists = openShifts.some(Boolean);
-            if (shiftExists) {
-                return true;
-            }
+            // Filter out null values and add the matching open shifts
+            const matchingShift = openShifts.filter(shift => shift !== null);
+            matchingShifts.push(...matchingShift);
         };
 
-        // Otherwise return false
-        return false;
+        return matchingShifts;
 
     } catch (error) {
         noSuchElementErrorHandler(error);
@@ -47,4 +51,4 @@ const claimShifts = async (targetShifts) => {
     }
 };
 
-export default claimShifts;
+export default findShifts;
