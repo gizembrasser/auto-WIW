@@ -1,4 +1,4 @@
-import puppeteer from "puppeteer";
+import puppeteer, { BrowserContext } from "puppeteer";
 import "dotenv/config";
 import { noSuchElementErrorHandler, timeoutErrorHandler } from "../errors/errorHandling.js";
 
@@ -6,7 +6,7 @@ import { noSuchElementErrorHandler, timeoutErrorHandler } from "../errors/errorH
 const login = async () => {
     console.time("Login process completed in");
 
-    const browser = await puppeteer.launch({ headless: "new" });
+    const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
 
     try {
@@ -24,12 +24,12 @@ const login = async () => {
         // Wait for login process to complete
         await page.waitForNavigation({
             waitUntil: "domcontentloaded",
-            timeout: 5000,
+            timeout: 10000,
         });
 
         console.timeEnd("Login process completed in");
 
-        return browser, page;
+        return { browser: browser, page: page };
 
     } catch (error) {
         noSuchElementErrorHandler(error);
