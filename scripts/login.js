@@ -32,7 +32,6 @@ const login = async () => {
         return { browser: browser, page: page };
 
     } catch (error) {
-        noSuchElementErrorHandler(error);
         timeoutErrorHandler(error);
 
         console.error("An error occured during login:", error);
