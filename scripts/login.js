@@ -1,4 +1,4 @@
-import puppeteer, { BrowserContext } from "puppeteer";
+import puppeteer from "puppeteer";
 import "dotenv/config";
 import { noSuchElementErrorHandler, timeoutErrorHandler } from "../errors/errorHandling.js";
 
