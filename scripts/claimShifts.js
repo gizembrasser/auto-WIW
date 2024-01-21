@@ -5,10 +5,10 @@ import login from "./login.js";
 const claimShifts = async (targetShifts) => {
     const { browser, page } = await login();
 
-    try {
-        let matchingShifts = [];
-        let timeout = 300000; // 5 minutes timeout
+    let matchingShifts = [];
+    let timeout = 300000; // 5 minutes timeout
 
+    try {
         console.log("Searching for matching open shifts...")
         while (timeout > 0) {
             // Wait for the container of open shifts to be present
