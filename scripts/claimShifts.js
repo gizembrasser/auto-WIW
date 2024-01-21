@@ -1,4 +1,4 @@
-import { noSuchElementErrorHandler } from "../errors/errorHandling.js";
+import { noSuchElementErrorHandler, networkErrorHandler } from "../errors/errorHandling.js";
 import login from "./login.js";
 
 
@@ -64,6 +64,7 @@ const claimShifts = async (targetShifts) => {
 
     } catch (error) {
         noSuchElementErrorHandler(error);
+        networkErrorHandler(error);
         console.error('An error occurred:', error);
 
         await browser.close();

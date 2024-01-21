@@ -1,6 +1,6 @@
 import puppeteer from "puppeteer";
 import "dotenv/config";
-import { noSuchElementErrorHandler, timeoutErrorHandler } from "../errors/errorHandling.js";
+import { timeoutErrorHandler, networkErrorHandler } from "../errors/errorHandling.js";
 
 
 const login = async () => {
@@ -33,7 +33,7 @@ const login = async () => {
 
     } catch (error) {
         timeoutErrorHandler(error);
-        console.error("An error occured during login:", error);
+        networkErrorHandler(error);
 
         await browser.close();
         throw error; // Re-throw error to signal that login failed
