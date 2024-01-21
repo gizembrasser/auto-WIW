@@ -33,7 +33,6 @@ const login = async () => {
 
     } catch (error) {
         timeoutErrorHandler(error);
-
         console.error("An error occured during login:", error);
 
         await browser.close();

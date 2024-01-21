@@ -55,11 +55,18 @@ const claimShifts = async (targetShifts) => {
             console.log("Refreshing page...")
         };
 
+        // Check if the timeout has run out
+        if (timeout <= 0) {
+            console.log("5 minute timer ran out. Visit https://appx.wheniwork.com/myschedule to maunally claim shifts.")
+        }
+
         return matchingShifts;
 
     } catch (error) {
         noSuchElementErrorHandler(error);
         console.error('An error occurred:', error);
+
+        await browser.close();
         throw error;
     } finally {
         if (browser) {
