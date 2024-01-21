@@ -1,9 +1,8 @@
-import puppeteer from "puppeteer";
 import { noSuchElementErrorHandler } from "../errors/errorHandling.js";
 import login from "./login.js";
 
 
-const findShifts = async (targetShifts) => {
+const claimShifts = async (targetShifts) => {
     const { browser, page } = await login();
 
     try {
@@ -26,6 +25,7 @@ const findShifts = async (targetShifts) => {
                     const month = await shift.$eval(".col-md-4.date.text-center span", span => span.textContent.trim());
                     const day = await shift.$eval('.col-md-4.date.text-center div', div => div.textContent.trim());
                     const time = await shift.$eval('.row.no-gutters.align-items-center', row => row.textContent.trim());
+                    const button = await shift.$("button[type='button'].btn.btn-primary.btn-sm");
 
                     const openShift = { month: month, day: day, time: time };
 
@@ -33,6 +33,7 @@ const findShifts = async (targetShifts) => {
                     if (Object.entries(targetShift).every(([key, value]) => openShift[key] === value)
                         &&
                         !matchingShifts.some(claimed => claimed.month === month && claimed.day === day && claimed.time === time)) {
+                        // await button.click();
 
                         console.log("Shift claimed:", openShift);
                         matchingShifts.push(openShift);
@@ -67,4 +68,4 @@ const findShifts = async (targetShifts) => {
     }
 };
 
-export default findShifts;
+export default claimShifts;
