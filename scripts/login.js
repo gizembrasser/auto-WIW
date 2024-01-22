@@ -1,6 +1,5 @@
 import puppeteer from "puppeteer";
 import "dotenv/config";
-import { timeoutErrorHandler, networkErrorHandler } from "../errors/errorHandling.js";
 
 
 const login = async () => {
@@ -32,11 +31,8 @@ const login = async () => {
         return { browser: browser, page: page };
 
     } catch (error) {
-        timeoutErrorHandler(error);
-        networkErrorHandler(error);
-
         await browser.close();
-        throw error; // Re-throw error to signal that login failed
+        throw error; // Throw error to signal that login failed
     }
 };
 
