@@ -1,14 +1,18 @@
-import { noSuchElementErrorHandler, networkErrorHandler } from "../errors/errorHandling.js";
+import { noSuchElementErrorHandler, networkErrorHandler, timeoutErrorHandler } from "../errors/errorHandling.js";
 import login from "./login.js";
 
 
 const claimShifts = async (targetShifts) => {
-    const { browser, page } = await login();
-
+    let browser, page;
     let matchingShifts = [];
     let timeout = 300000; // 5 minutes timeout
 
     try {
+        // Log in to the account to redirect to /myschedule route
+        const mySchedule = await login();
+        browser = mySchedule.browser;
+        page = mySchedule.page;
+
         console.log("Searching for matching open shifts...")
         while (timeout > 0) {
             // Wait for the container of open shifts to be present
@@ -45,7 +49,7 @@ const claimShifts = async (targetShifts) => {
             }
 
             if (matchingShifts.length === targetShifts.length) {
-                // All targetshifts have matching shifts, break out of the loop
+                // All targetShifts have matching shifts, break out of the loop
                 break;
             }
 
@@ -55,9 +59,9 @@ const claimShifts = async (targetShifts) => {
             console.log("Refreshing page...")
         };
 
-        // Check if the timeout has run out
+        // Check if the timer has run out
         if (timeout <= 0) {
-            console.log("5 minute timer ran out. Visit https://appx.wheniwork.com/myschedule to maunally claim shifts.")
+            console.log("Unable to locate more shifts. Visit https://appx.wheniwork.com/myschedule to maunally claim.")
         }
 
         return matchingShifts;
@@ -65,10 +69,9 @@ const claimShifts = async (targetShifts) => {
     } catch (error) {
         noSuchElementErrorHandler(error);
         networkErrorHandler(error);
-        console.error('An error occurred:', error);
+        timeoutErrorHandler(error);
 
-        await browser.close();
-        throw error;
+        console.error('An error occurred:', error.message);
     } finally {
         if (browser) {
             await browser.close();

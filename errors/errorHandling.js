@@ -1,6 +1,6 @@
 export const noSuchElementErrorHandler = (error) => {
     if (error.name === "NoSuchElementError") {
-        console.error("No openshifts found.");
+        console.error("No open shifts found.");
     }
 };
 
