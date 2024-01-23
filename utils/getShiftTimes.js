@@ -1,4 +1,4 @@
-export const getShiftTimes = (shiftName) => {
+export const getShiftTimes = (shiftNames) => {
     const shiftTimes = {
         m1: "7:30 - 10:05",
         m2: "10:15 - 12:50",
@@ -11,17 +11,19 @@ export const getShiftTimes = (shiftName) => {
         s1s2s3: "14:15 - 22:20"
     };
 
-    const shiftTime = shiftTimes[shiftName];
-
-    if (shiftTime) {
-        return { time: shiftTime };
-    } else {
-        console.log("Provide a valid shift name (m1, m2, s1, s2, s3)");
+    for (const shiftName of shiftNames) {
+        if (!shiftTimes[shiftName]) {
+            console.log("Provide a valid shift name (m1, m2, s1, s2, s3)");
+            return null;
+        }
     }
+
+    const targetShifts = shiftNames.map(shiftName => ({ time: shiftTimes[shiftName] }));
+    return targetShifts;
 };
 
 
-export const getShiftTimesWeekend = (shiftName) => {
+export const getShiftTimesWeekend = (shiftNames) => {
     const shiftTimes = {
         m1: "8:00 - 10:40",
         m2: "10:40 - 13:20",
@@ -34,11 +36,13 @@ export const getShiftTimesWeekend = (shiftName) => {
         s1s2s3: "14:15 - 22:20"
     };
 
-    const shiftTime = shiftTimes[shiftName];
-
-    if (shiftTime) {
-        return { time: shiftTime };
-    } else {
-        console.log("Provide a valid shift name (m1, m2, s1, s2, s3)");
+    for (const shiftName of shiftNames) {
+        if (!shiftTimes[shiftName]) {
+            console.log("Provide a valid shift name (m1, m2, s1, s2, s3)");
+            return null;
+        }
     }
+
+    const targetShifts = shiftNames.map(shiftName => ({ time: shiftTimes[shiftName] }));
+    return targetShifts;
 };
