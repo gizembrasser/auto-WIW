@@ -1,5 +1,4 @@
 import puppeteer from "puppeteer";
-import "dotenv/config";
 import log from "../utils/log.js";
 
 
