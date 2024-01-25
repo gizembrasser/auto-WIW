@@ -3,6 +3,7 @@ import claimShifts from "./scripts/claimShifts.js";
 import getTargetShifts from "./utils/getTargetShifts.js";
 import availabilityData from "./data/availability.json" assert { type: "json" };
 import "dotenv/config";
+import log from "./utils/log.js";
 
 const EMAIL_ADDRESS = process.env.EMAIL_ADDRESS;
 const PASSWORD = process.env.PASSWORD;
@@ -29,6 +30,7 @@ async function main() {
     } finally {
         if (browser) {
             await browser.close()
+            log.closeStream();
         }
     }
 };
