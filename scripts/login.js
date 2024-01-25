@@ -1,9 +1,10 @@
 import puppeteer from "puppeteer";
 import "dotenv/config";
+import log from "../utils/log.js";
 
 
-const login = async () => {
-    console.time("Login process completed in");
+const login = async (email, password) => {
+    console.time("Total time elapsed");
 
     const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
@@ -13,11 +14,11 @@ const login = async () => {
         await page.goto("https://login.wheniwork.com");
 
         // Find and type into the input fields
-        console.log("Attempting to log in...");
-        await page.type("input[name='email']", process.env.EMAIL_ADDRESS);
+        log("Attempting to log in...");
+        await page.type("input[name='email']", email);
         await page.keyboard.press("Enter");
 
-        await page.type("input[name='password']", process.env.PASSWORD);
+        await page.type("input[name='password']", password);
         await page.keyboard.press("Enter");
 
         // Wait for login process to complete
@@ -26,7 +27,8 @@ const login = async () => {
             timeout: 10000,
         });
 
-        console.timeEnd("Login process completed in");
+        log("Login process completed!");
+        console.timeEnd("Total time elapsed");
 
         return { browser: browser, page: page };
 

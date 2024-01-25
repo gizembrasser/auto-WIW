@@ -1,19 +1,13 @@
 import { noSuchElementErrorHandler, networkErrorHandler, timeoutErrorHandler } from "../errors/errorHandling.js";
-import login from "./login.js";
+import log from "../utils/log.js"
 
 
-const claimShifts = async (targetShifts) => {
-    let browser, page;
+const claimShifts = async (targetShifts, browser, page) => {
     let matchingShifts = [];
     let timeout = 300000; // 5 minutes timeout
 
     try {
-        // Log in to the account to redirect to /myschedule route
-        const mySchedule = await login();
-        browser = mySchedule.browser;
-        page = mySchedule.page;
-
-        console.log("Searching for matching open shifts...")
+        log("Searching for matching open shifts...")
         while (timeout > 0) {
             // Wait for the container of open shifts to be present
             await page.waitForSelector("#main-content > div.container.available-openshifts > div:nth-child(2)");
@@ -39,7 +33,7 @@ const claimShifts = async (targetShifts) => {
                         !matchingShifts.some(claimed => claimed.month === month && claimed.day === day && claimed.time === time)) {
                         // await button.click();
 
-                        console.log("Shift claimed:", openShift);
+                        log("Shift claimed:", openShift);
                         matchingShifts.push(openShift);
                         return openShift;
                     }
@@ -56,26 +50,19 @@ const claimShifts = async (targetShifts) => {
             // No matches found for current targetShift, refresh the page
             await page.reload({ waitUntil: "domcontentloaded" });
             timeout -= 2000; // Subtract two seconds from the timeout
-            console.log("Refreshing page...")
+            log("Refreshing page...")
         };
 
         // Check if the timer has run out
         if (timeout <= 0) {
-            console.log("Unable to locate more shifts. Visit https://appx.wheniwork.com/myschedule to maunally claim.")
+            log("Unable to locate more shifts. Visit https://appx.wheniwork.com/myschedule to manually claim.")
         }
 
         return matchingShifts;
 
     } catch (error) {
-        noSuchElementErrorHandler(error);
-        networkErrorHandler(error);
-        timeoutErrorHandler(error);
-
-        console.error('An error occurred:', error.message);
-    } finally {
-        if (browser) {
-            await browser.close();
-        }
+        await browser.close();
+        throw error;
     }
 };
 
