@@ -1,9 +1,8 @@
 import getNextShiftDates from "./getNextShiftDates.js";
 import { getShiftTimes, getShiftTimesWeekend } from "./getShiftTimes.js";
-import availabilityData from "../data/availability.json" assert { type: "json" };
 
 
-const getTargetShifts = () => {
+const getTargetShifts = (availabilityData) => {
     const { availability } = availabilityData;
     const days = [];
     const times = [];
@@ -35,4 +34,4 @@ const getTargetShifts = () => {
     return targetShifts;
 };
 
-getTargetShifts();
+export default getTargetShifts;

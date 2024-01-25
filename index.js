@@ -1,10 +1,42 @@
-import claimShifts from "./scripts/claimShifts.js"
+import login from "./scripts/login.js";
+import claimShifts from "./scripts/claimShifts.js";
+import getTargetShifts from "./utils/getTargetShifts.js";
+import availabilityData from "./data/availability.json" assert { type: "json" };
+import "dotenv/config";
 
-const testShifts = [
-    { month: "JAN", day: "18", time: "17:00 - 19:35" },
-    { month: "FEB", day: "14", time: "14:15 - 22:20" }
-];
+const EMAIL_ADDRESS = process.env.EMAIL_ADDRESS;
+const PASSWORD = process.env.PASSWORD;
 
-const claimed = await claimShifts(testShifts);
-console.log(claimed);
+
+async function main() {
+    const targetShifts = getTargetShifts(availabilityData);
+    let browser, page;
+
+    try {
+        // Log in to the account to redirect to /myschedule route
+        const mySchedule = await login(EMAIL_ADDRESS, PASSWORD);
+        browser = mySchedule.browser;
+        page = mySchedule.page;
+
+        await claimShifts(targetShifts, browser, page);
+
+    } catch (error) {
+        noSuchElementErrorHandler(error);
+        networkErrorHandler(error);
+        timeoutErrorHandler(error);
+
+        console.error('An error occurred:', error);
+    } finally {
+        if (browser) {
+            await browser.close()
+        }
+    }
+};
+
+main();
+
+
+
+
+
 
