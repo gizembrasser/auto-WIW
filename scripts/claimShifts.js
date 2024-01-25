@@ -30,7 +30,7 @@ const claimShifts = async (targetShifts, browser, page) => {
                     if (Object.entries(targetShift).every(([key, value]) => openShift[key] === value)
                         &&
                         !matchingShifts.some(claimed => claimed.month === month && claimed.day === day && claimed.time === time)) {
-                        // await button.click();
+                        await button.click();
 
                         log("Shift claimed:", openShift);
                         matchingShifts.push(openShift);
