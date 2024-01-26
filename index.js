@@ -2,8 +2,9 @@ import login from "./scripts/login.js";
 import claimShifts from "./scripts/claimShifts.js";
 import getTargetShifts from "./utils/getTargetShifts.js";
 import availabilityData from "./data/availability.json" assert { type: "json" };
-import "dotenv/config";
 import log from "./utils/log.js";
+import "dotenv/config";
+import { noSuchElementErrorHandler, networkErrorHandler, timeoutErrorHandler } from "./errors/errorHandling.js";
 
 const EMAIL_ADDRESS = process.env.EMAIL_ADDRESS;
 const PASSWORD = process.env.PASSWORD;
