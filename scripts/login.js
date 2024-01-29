@@ -1,12 +1,8 @@
-import puppeteer from "puppeteer";
 import log from "../utils/log.js";
 
 
-const login = async (email, password) => {
+const login = async (credentials, browser, page) => {
     console.time("Total time elapsed");
-
-    const browser = await puppeteer.launch({ headless: false });
-    const page = await browser.newPage();
 
     try {
         // Open the website
@@ -14,10 +10,10 @@ const login = async (email, password) => {
 
         // Find and type into the input fields
         log("Attempting to log in...");
-        await page.type("input[name='email']", email);
+        await page.type("input[name='email']", credentials.email);
         await page.keyboard.press("Enter");
 
-        await page.type("input[name='password']", password);
+        await page.type("input[name='password']", credentials.password);
         await page.keyboard.press("Enter");
 
         // Wait for login process to complete
