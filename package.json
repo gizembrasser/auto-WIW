@@ -5,7 +5,11 @@
     "main": "index.js",
     "type": "module",
     "scripts": {
-        "start": "nodemon --quiet"
+        "start": "nodemon --quiet",
+        "test": "jest"
+    },
+    "jest": {
+        "preset": "jest-puppeteer"
     },
     "keywords": [],
     "author": "Gizem Brasser",
@@ -15,5 +19,9 @@
         "camelcase-keys": "^9.1.2",
         "dotenv": "^16.3.1",
         "puppeteer": "^21.7.0"
+    },
+    "devDependencies": {
+        "jest": "^29.7.0",
+        "jest-puppeteer": "^9.0.2"
     }
 }
