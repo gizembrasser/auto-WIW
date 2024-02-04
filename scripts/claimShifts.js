@@ -32,7 +32,7 @@ const claimShifts = async (targetShifts, browser, page) => {
                         // Wait for pop-up to appear and click it
                         const popup = await page.waitForSelector(".dialog-footer.justify-content-end");
                         const sumbit = await popup.$("button[type='submit']");
-                        // await sumbit.click();
+                        await sumbit.click();
 
                         log("Shift claimed:", openShift);
                         matchingShifts.push(openShift);
