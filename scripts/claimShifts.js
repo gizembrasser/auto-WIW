@@ -22,24 +22,25 @@ const claimShifts = async (targetShifts, browser, page) => {
                     const month = await shift.$eval(".col-md-4.date.text-center span", span => span.textContent.trim());
                     const day = await shift.$eval('.col-md-4.date.text-center div', div => div.textContent.trim());
                     const time = await shift.$eval('.row.no-gutters.align-items-center', row => row.textContent.trim());
-                    const button = await shift.$("button[type='button'].btn.btn-primary.btn-sm");
+                    const button = await shift.$("button[type='button']");
 
                     const openShift = { month: month, day: day, time: time };
 
                     // Check if current shift available matches the targetShift
-                    if (Object.entries(targetShift).every(([key, value]) => openShift[key] === value)
-                        &&
-                        !matchingShifts.some(claimed => claimed.month === month && claimed.day === day && claimed.time === time)) {
-                        await button.click();
+                    if (areShiftsMatching(targetShift, openShift) && !isShiftClaimed(openShift, matchingShifts)) {
+                        await button.evaluate(node => node.click());
+                        // Wait for pop-up to appear and click it
+                        const popup = await page.waitForSelector(".dialog-footer.justify-content-end");
+                        const sumbit = await popup.$("button[type='submit']");
+                        // await sumbit.click();
 
                         log("Shift claimed:", openShift);
                         matchingShifts.push(openShift);
                         return openShift;
                     }
-
                     return null;
                 }));
-            }
+            };
 
             if (matchingShifts.length === targetShifts.length) {
                 // All targetShifts have matching shifts, break out of the loop
@@ -56,7 +57,6 @@ const claimShifts = async (targetShifts, browser, page) => {
         if (timeout <= 0) {
             log("Unable to locate more shifts. Visit https://appx.wheniwork.com/myschedule to manually claim.")
         }
-
         return matchingShifts;
 
     } catch (error) {
@@ -66,3 +66,12 @@ const claimShifts = async (targetShifts, browser, page) => {
 };
 
 export default claimShifts;
+
+
+const areShiftsMatching = (targetShift, openShift) => {
+    Object.entries(targetShift).every(([key, value]) => openShift[key] === value);
+};
+
+const isShiftClaimed = (openShift, matchingShifts) => {
+    matchingShifts.some(claimed => areShiftsMatching(claimed, openShift));
+};

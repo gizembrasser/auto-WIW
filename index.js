@@ -10,11 +10,9 @@ import puppeteer from "puppeteer";
 const EMAIL_ADDRESS = process.env.EMAIL_ADDRESS;
 const PASSWORD = process.env.PASSWORD;
 
-
 async function main() {
     const targetShifts = getTargetShifts(availabilityData);
     const credentials = { email: EMAIL_ADDRESS, password: PASSWORD };
-
     // Open browser
     let browser = await puppeteer.launch({ headless: false });
     let page = await browser.newPage();
@@ -25,6 +23,7 @@ async function main() {
         browser = mySchedule.browser;
         page = mySchedule.page;
 
+        // Use redirected page to claim shifts
         await claimShifts(targetShifts, browser, page);
 
     } catch (error) {
