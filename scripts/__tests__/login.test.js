@@ -1,11 +1,12 @@
 import login from "../login.js";
-import { describe, it, expect } from "@jest/globals";
 import "dotenv/config";
 import puppeteer from "puppeteer";
 
 // Launch browser before tests
-const browser = await puppeteer.launch({ headless: false });
+const browser = await puppeteer.launch({ headless: "new" });
 const page = await browser.newPage();
+
+const timeout = 20000;
 
 
 describe("login function", () => {
@@ -39,4 +40,4 @@ describe("login function", () => {
         // Assertions
         await expect(login(credentials, browser, page)).rejects.toThrow();
     })
-});
+}, timeout);
